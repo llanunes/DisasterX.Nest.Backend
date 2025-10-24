@@ -1,0 +1,57 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type DisasterAlertsModel {
+  id: ID!
+  createdAt: DateTime!
+  neighborhoodId: String!
+  message: String!
+  severityLevel: String!
+  eventDate: DateTime!
+  categoryId: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type NeighborhoodsModel {
+  id: ID!
+  createdAt: DateTime!
+  name: String!
+  latitude: Float!
+  longitude: Float!
+}
+
+type DisasterCategoriesModel {
+  id: ID!
+  createdAt: DateTime!
+  name: String!
+  iconUrl: String!
+}
+
+type Query {
+  disasterAlerts: [DisasterAlertsModel!]!
+  neighborhoods: [NeighborhoodsModel!]!
+  disasterCategories: [DisasterCategoriesModel!]!
+  disasterCategory(id: String!): DisasterCategoriesModel
+}
+
+type Mutation {
+  createDisasterCategory(input: CreateDisasterCategoriesInput!): DisasterCategoriesModel!
+  updateDisasterCategory(id: String!, input: UpdateDisasterCategoriesInput!): DisasterCategoriesModel
+  deleteDisasterCategory(id: String!): Boolean!
+}
+
+input CreateDisasterCategoriesInput {
+  name: String!
+  iconUrl: String
+}
+
+input UpdateDisasterCategoriesInput {
+  name: String!
+  iconUrl: String
+  id: String!
+}
