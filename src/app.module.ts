@@ -13,6 +13,7 @@ import { DisasterCategoriesModule } from './modules/disaster-categories/disaster
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       introspection: true,
       csrfPrevention: false,
+      playground: true,
       // 👇 o cast aqui permite usar o novo Sandbox mesmo que o type não reconheça
       apollo: {
         sandbox: {
