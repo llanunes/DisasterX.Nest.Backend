@@ -46,6 +46,8 @@ exports.DisasterAlertsModel = DisasterAlertsModel = __decorate([
 let DisasterAlertsCustomModel = class DisasterAlertsCustomModel extends DisasterAlertsModel {
     neighborhoodName;
     categoryName;
+    latitude;
+    longitude;
 };
 exports.DisasterAlertsCustomModel = DisasterAlertsCustomModel;
 __decorate([
@@ -56,6 +58,14 @@ __decorate([
     (0, graphql_1.Field)(() => String, { nullable: false }),
     __metadata("design:type", String)
 ], DisasterAlertsCustomModel.prototype, "categoryName", void 0);
+__decorate([
+    (0, graphql_1.Field)(() => Number, { nullable: false }),
+    __metadata("design:type", Number)
+], DisasterAlertsCustomModel.prototype, "latitude", void 0);
+__decorate([
+    (0, graphql_1.Field)(() => Number, { nullable: false }),
+    __metadata("design:type", Number)
+], DisasterAlertsCustomModel.prototype, "longitude", void 0);
 exports.DisasterAlertsCustomModel = DisasterAlertsCustomModel = __decorate([
     (0, graphql_1.ObjectType)()
 ], DisasterAlertsCustomModel);

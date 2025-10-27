@@ -27,6 +27,8 @@ type DisasterAlertsCustomModel {
   categoryId: String!
   neighborhoodName: String!
   categoryName: String!
+  latitude: Float!
+  longitude: Float!
 }
 
 type NeighborhoodsModel {

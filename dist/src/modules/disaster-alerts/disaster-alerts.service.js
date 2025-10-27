@@ -27,6 +27,8 @@ let DisasterAlertsService = class DisasterAlertsService {
             categoryName: disaster_categories_1.disasterCategoriesTable.name ?? "Não informado",
             neighborhoodId: disaster_alerts_1.disasterAlertsTable.neighborhoodId,
             neighborhoodName: neighborhoods_1.neighborhoodsTable.name ?? "Não informado",
+            latitude: neighborhoods_1.neighborhoodsTable.latitude,
+            longitude: neighborhoods_1.neighborhoodsTable.longitude,
             message: disaster_alerts_1.disasterAlertsTable.message,
             severityLevel: disaster_alerts_1.disasterAlertsTable.severityLevel,
             eventDate: disaster_alerts_1.disasterAlertsTable.eventDate,
@@ -37,7 +39,11 @@ let DisasterAlertsService = class DisasterAlertsService {
             .innerJoin(disaster_categories_1.disasterCategoriesTable, (0, drizzle_orm_1.eq)(disaster_alerts_1.disasterAlertsTable.categoryId, disaster_categories_1.disasterCategoriesTable.id))
             .innerJoin(neighborhoods_1.neighborhoodsTable, (0, drizzle_orm_1.eq)(disaster_alerts_1.disasterAlertsTable.neighborhoodId, neighborhoods_1.neighborhoodsTable.id))
             .execute();
-        return alerts;
+        return alerts.map(alert => ({
+            ...alert,
+            latitude: Number(alert.latitude),
+            longitude: Number(alert.longitude),
+        }));
     }
     async getDisasterAlertById(id) {
         const alert = await drizzle_1.drizzle.query.disasterAlertsTable.findFirst({

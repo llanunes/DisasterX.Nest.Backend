@@ -29,6 +29,11 @@ export class DisasterAlertsCustomModel extends DisasterAlertsModel {
   @Field(() => String, { nullable: false })
   categoryName!: string;
 
+  @Field(() => Number, { nullable: false })
+  latitude!: number;
+
+  @Field(() => Number, { nullable: false })
+  longitude!: number;
 }
 
 @InputType()

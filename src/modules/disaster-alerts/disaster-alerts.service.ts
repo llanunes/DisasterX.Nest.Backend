@@ -12,27 +12,40 @@ export class DisasterAlertsService {
 
   constructor() {}
 
-  async getDisasterAlerts(): Promise<DisasterAlertsCustomModel[]> {
-    const alerts = await drizzle
-      .select({
-        id: disasterAlertsTable.id,
-        categoryId: disasterAlertsTable.categoryId,
-        categoryName: disasterCategoriesTable.name ?? "Não informado",
-        neighborhoodId: disasterAlertsTable.neighborhoodId,
-        neighborhoodName: neighborhoodsTable.name ?? "Não informado",
-        message: disasterAlertsTable.message,
-        severityLevel: disasterAlertsTable.severityLevel,
-        eventDate: disasterAlertsTable.eventDate,
-        createdAt: disasterAlertsTable.createdAt,
-        updatedAt: disasterAlertsTable.updatedAt,
-      })
-      .from(disasterAlertsTable)
-      .innerJoin(disasterCategoriesTable, eq(disasterAlertsTable.categoryId, disasterCategoriesTable.id))
-      .innerJoin(neighborhoodsTable, eq(disasterAlertsTable.neighborhoodId, neighborhoodsTable.id))
-      .execute();
+async getDisasterAlerts(): Promise<DisasterAlertsCustomModel[]> {
+  const alerts = await drizzle
+    .select({
+      id: disasterAlertsTable.id,
+      categoryId: disasterAlertsTable.categoryId,
+      categoryName: disasterCategoriesTable.name ?? "Não informado",
+      neighborhoodId: disasterAlertsTable.neighborhoodId,
+      neighborhoodName: neighborhoodsTable.name ?? "Não informado",
+      latitude: neighborhoodsTable.latitude,
+      longitude: neighborhoodsTable.longitude,
+      message: disasterAlertsTable.message,
+      severityLevel: disasterAlertsTable.severityLevel,
+      eventDate: disasterAlertsTable.eventDate,
+      createdAt: disasterAlertsTable.createdAt,
+      updatedAt: disasterAlertsTable.updatedAt,
+    })
+    .from(disasterAlertsTable)
+    .innerJoin(
+      disasterCategoriesTable,
+      eq(disasterAlertsTable.categoryId, disasterCategoriesTable.id)
+    )
+    .innerJoin(
+      neighborhoodsTable,
+      eq(disasterAlertsTable.neighborhoodId, neighborhoodsTable.id)
+    )
+    .execute();
 
-    return alerts;
-  }
+  return alerts.map(alert => ({
+    ...alert,
+    latitude: Number(alert.latitude),
+    longitude: Number(alert.longitude),
+  }));
+}
+
 
   async getDisasterAlertById(id: string): Promise<DisasterAlertsModel | null> {
     const alert = await drizzle.query.disasterAlertsTable.findFirst({
