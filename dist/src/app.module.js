@@ -25,6 +25,7 @@ exports.AppModule = AppModule = __decorate([
                 autoSchemaFile: (0, path_1.join)(process.cwd(), 'src/schema.gql'),
                 introspection: true,
                 csrfPrevention: false,
+                playground: true,
                 apollo: {
                     sandbox: {
                         settings: {

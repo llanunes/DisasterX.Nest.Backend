@@ -40,9 +40,28 @@ type Query {
 }
 
 type Mutation {
+  createDisasterAlert(input: CreateDisasterAlertsInput!): DisasterAlertsModel!
+  updateDisasterAlert(id: String!, input: UpdateDisasterAlertsInput!): DisasterAlertsModel
   createDisasterCategory(input: CreateDisasterCategoriesInput!): DisasterCategoriesModel!
   updateDisasterCategory(id: String!, input: UpdateDisasterCategoriesInput!): DisasterCategoriesModel
   deleteDisasterCategory(id: String!): Boolean!
+}
+
+input CreateDisasterAlertsInput {
+  neighborhoodId: String!
+  message: String!
+  severityLevel: String!
+  eventDate: DateTime!
+  categoryId: String!
+}
+
+input UpdateDisasterAlertsInput {
+  neighborhoodId: String!
+  message: String!
+  severityLevel: String!
+  eventDate: DateTime!
+  categoryId: String!
+  id: String!
 }
 
 input CreateDisasterCategoriesInput {

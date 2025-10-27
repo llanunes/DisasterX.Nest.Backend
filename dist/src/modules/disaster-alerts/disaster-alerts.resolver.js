@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DisasterAlertsResolver = void 0;
 const graphql_1 = require("@nestjs/graphql");
@@ -21,6 +24,12 @@ let DisasterAlertsResolver = class DisasterAlertsResolver {
     async disasterAlerts() {
         return this.service.getDisasterAlerts();
     }
+    async createDisasterAlert(input) {
+        return this.service.createDisasterAlert(input);
+    }
+    async updateDisasterAlert(id, input) {
+        return this.service.updateDisasterAlert(id, input);
+    }
 };
 exports.DisasterAlertsResolver = DisasterAlertsResolver;
 __decorate([
@@ -29,6 +38,21 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], DisasterAlertsResolver.prototype, "disasterAlerts", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => disaster_alerts_entity_1.DisasterAlertsModel),
+    __param(0, (0, graphql_1.Args)("input")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [disaster_alerts_entity_1.CreateDisasterAlertsInput]),
+    __metadata("design:returntype", Promise)
+], DisasterAlertsResolver.prototype, "createDisasterAlert", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => disaster_alerts_entity_1.DisasterAlertsModel, { nullable: true }),
+    __param(0, (0, graphql_1.Args)("id")),
+    __param(1, (0, graphql_1.Args)("input")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, disaster_alerts_entity_1.UpdateDisasterAlertsInput]),
+    __metadata("design:returntype", Promise)
+], DisasterAlertsResolver.prototype, "updateDisasterAlert", null);
 exports.DisasterAlertsResolver = DisasterAlertsResolver = __decorate([
     (0, graphql_1.Resolver)(() => disaster_alerts_entity_1.DisasterAlertsModel),
     __metadata("design:paramtypes", [disaster_alerts_service_1.DisasterAlertsService])
