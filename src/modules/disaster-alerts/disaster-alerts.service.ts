@@ -2,7 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { drizzle } from "drizzle";
 import { eq } from "drizzle-orm";
 import { DisasterAlert, disasterAlertsTable } from "src/drizzle/disaster-alerts";
-import { CreateDisasterAlertsInput, DisasterAlertsModel, UpdateDisasterAlertsInput } from "./disaster-alerts.entity";
+import { CreateDisasterAlertsInput, DisasterAlertsCustomModel, DisasterAlertsModel, UpdateDisasterAlertsInput } from "./disaster-alerts.entity";
+import { disasterCategoriesTable } from "src/drizzle/disaster-categories";
+import { neighborhoodsTable } from "src/drizzle/neighborhoods";
 
 @Injectable()
 export class DisasterAlertsService {
@@ -10,19 +12,26 @@ export class DisasterAlertsService {
 
   constructor() {}
 
-  async getDisasterAlerts(): Promise<DisasterAlertsModel[]> {
-    return drizzle.query.disasterAlertsTable.findMany({
-      columns: {
-        id: true,
-        categoryId: true,
-        neighborhoodId: true,
-        message: true,
-        severityLevel: true,
-        eventDate: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+  async getDisasterAlerts(): Promise<DisasterAlertsCustomModel[]> {
+    const alerts = await drizzle
+      .select({
+        id: disasterAlertsTable.id,
+        categoryId: disasterAlertsTable.categoryId,
+        categoryName: disasterCategoriesTable.name ?? "Não informado",
+        neighborhoodId: disasterAlertsTable.neighborhoodId,
+        neighborhoodName: neighborhoodsTable.name ?? "Não informado",
+        message: disasterAlertsTable.message,
+        severityLevel: disasterAlertsTable.severityLevel,
+        eventDate: disasterAlertsTable.eventDate,
+        createdAt: disasterAlertsTable.createdAt,
+        updatedAt: disasterAlertsTable.updatedAt,
+      })
+      .from(disasterAlertsTable)
+      .innerJoin(disasterCategoriesTable, eq(disasterAlertsTable.categoryId, disasterCategoriesTable.id))
+      .innerJoin(neighborhoodsTable, eq(disasterAlertsTable.neighborhoodId, neighborhoodsTable.id))
+      .execute();
+
+    return alerts;
   }
 
   async getDisasterAlertById(id: string): Promise<DisasterAlertsModel | null> {

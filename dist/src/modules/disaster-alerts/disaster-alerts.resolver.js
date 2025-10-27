@@ -33,7 +33,7 @@ let DisasterAlertsResolver = class DisasterAlertsResolver {
 };
 exports.DisasterAlertsResolver = DisasterAlertsResolver;
 __decorate([
-    (0, graphql_1.Query)(() => [disaster_alerts_entity_1.DisasterAlertsModel]),
+    (0, graphql_1.Query)(() => [disaster_alerts_entity_1.DisasterAlertsCustomModel]),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)

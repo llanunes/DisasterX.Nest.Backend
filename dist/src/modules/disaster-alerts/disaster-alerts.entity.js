@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateDisasterAlertsInput = exports.CreateDisasterAlertsInput = exports.DisasterAlertsModel = void 0;
+exports.UpdateDisasterAlertsInput = exports.CreateDisasterAlertsInput = exports.DisasterAlertsCustomModel = exports.DisasterAlertsModel = void 0;
 const graphql_1 = require("@nestjs/graphql");
 const base_model_1 = require("../../drizzle/base-model");
 let DisasterAlertsModel = class DisasterAlertsModel extends base_model_1.BaseModel {
@@ -43,6 +43,22 @@ __decorate([
 exports.DisasterAlertsModel = DisasterAlertsModel = __decorate([
     (0, graphql_1.ObjectType)()
 ], DisasterAlertsModel);
+let DisasterAlertsCustomModel = class DisasterAlertsCustomModel extends DisasterAlertsModel {
+    neighborhoodName;
+    categoryName;
+};
+exports.DisasterAlertsCustomModel = DisasterAlertsCustomModel;
+__decorate([
+    (0, graphql_1.Field)(() => String, { nullable: false }),
+    __metadata("design:type", String)
+], DisasterAlertsCustomModel.prototype, "neighborhoodName", void 0);
+__decorate([
+    (0, graphql_1.Field)(() => String, { nullable: false }),
+    __metadata("design:type", String)
+], DisasterAlertsCustomModel.prototype, "categoryName", void 0);
+exports.DisasterAlertsCustomModel = DisasterAlertsCustomModel = __decorate([
+    (0, graphql_1.ObjectType)()
+], DisasterAlertsCustomModel);
 let CreateDisasterAlertsInput = class CreateDisasterAlertsInput {
     neighborhoodId;
     message;

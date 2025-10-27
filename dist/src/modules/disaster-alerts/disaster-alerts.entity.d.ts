@@ -6,6 +6,10 @@ export declare class DisasterAlertsModel extends BaseModel {
     eventDate: Date;
     categoryId: string;
 }
+export declare class DisasterAlertsCustomModel extends DisasterAlertsModel {
+    neighborhoodName: string;
+    categoryName: string;
+}
 export declare class CreateDisasterAlertsInput {
     neighborhoodId: string;
     message: string;

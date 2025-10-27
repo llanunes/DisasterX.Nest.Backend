@@ -14,22 +14,30 @@ const common_1 = require("@nestjs/common");
 const drizzle_1 = require("../../../drizzle");
 const drizzle_orm_1 = require("drizzle-orm");
 const disaster_alerts_1 = require("../../drizzle/disaster-alerts");
+const disaster_categories_1 = require("../../drizzle/disaster-categories");
+const neighborhoods_1 = require("../../drizzle/neighborhoods");
 let DisasterAlertsService = class DisasterAlertsService {
     table = disaster_alerts_1.disasterAlertsTable;
     constructor() { }
     async getDisasterAlerts() {
-        return drizzle_1.drizzle.query.disasterAlertsTable.findMany({
-            columns: {
-                id: true,
-                categoryId: true,
-                neighborhoodId: true,
-                message: true,
-                severityLevel: true,
-                eventDate: true,
-                createdAt: true,
-                updatedAt: true,
-            },
-        });
+        const alerts = await drizzle_1.drizzle
+            .select({
+            id: disaster_alerts_1.disasterAlertsTable.id,
+            categoryId: disaster_alerts_1.disasterAlertsTable.categoryId,
+            categoryName: disaster_categories_1.disasterCategoriesTable.name ?? "Não informado",
+            neighborhoodId: disaster_alerts_1.disasterAlertsTable.neighborhoodId,
+            neighborhoodName: neighborhoods_1.neighborhoodsTable.name ?? "Não informado",
+            message: disaster_alerts_1.disasterAlertsTable.message,
+            severityLevel: disaster_alerts_1.disasterAlertsTable.severityLevel,
+            eventDate: disaster_alerts_1.disasterAlertsTable.eventDate,
+            createdAt: disaster_alerts_1.disasterAlertsTable.createdAt,
+            updatedAt: disaster_alerts_1.disasterAlertsTable.updatedAt,
+        })
+            .from(disaster_alerts_1.disasterAlertsTable)
+            .innerJoin(disaster_categories_1.disasterCategoriesTable, (0, drizzle_orm_1.eq)(disaster_alerts_1.disasterAlertsTable.categoryId, disaster_categories_1.disasterCategoriesTable.id))
+            .innerJoin(neighborhoods_1.neighborhoodsTable, (0, drizzle_orm_1.eq)(disaster_alerts_1.disasterAlertsTable.neighborhoodId, neighborhoods_1.neighborhoodsTable.id))
+            .execute();
+        return alerts;
     }
     async getDisasterAlertById(id) {
         const alert = await drizzle_1.drizzle.query.disasterAlertsTable.findFirst({

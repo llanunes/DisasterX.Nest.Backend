@@ -21,6 +21,16 @@ export class DisasterAlertsModel extends BaseModel {
   categoryId!: string;
 }
 
+@ObjectType()
+export class DisasterAlertsCustomModel extends DisasterAlertsModel {
+  @Field(() => String, { nullable: false })
+  neighborhoodName!: string;
+
+  @Field(() => String, { nullable: false })
+  categoryName!: string;
+
+}
+
 @InputType()
 export class CreateDisasterAlertsInput {
   @Field(() => String, { nullable: false })

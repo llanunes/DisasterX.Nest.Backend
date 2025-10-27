@@ -1,6 +1,6 @@
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { DisasterAlertsService } from "./disaster-alerts.service";
-import { CreateDisasterAlertsInput, DisasterAlertsModel, UpdateDisasterAlertsInput } from "./disaster-alerts.entity";
+import { CreateDisasterAlertsInput, DisasterAlertsCustomModel, DisasterAlertsModel, UpdateDisasterAlertsInput } from "./disaster-alerts.entity";
 
 @Resolver(() => DisasterAlertsModel)
 export class DisasterAlertsResolver {
@@ -8,8 +8,8 @@ export class DisasterAlertsResolver {
     private readonly service: DisasterAlertsService,
   ) {}
 
-  @Query(() => [DisasterAlertsModel])
-  async disasterAlerts(): Promise<DisasterAlertsModel[]> {
+  @Query(() => [DisasterAlertsCustomModel])
+  async disasterAlerts(): Promise<DisasterAlertsCustomModel[]> {
     return this.service.getDisasterAlerts();
   }
 

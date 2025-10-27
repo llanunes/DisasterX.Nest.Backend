@@ -17,6 +17,18 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type DisasterAlertsCustomModel {
+  id: ID!
+  createdAt: DateTime!
+  neighborhoodId: String!
+  message: String!
+  severityLevel: String!
+  eventDate: DateTime!
+  categoryId: String!
+  neighborhoodName: String!
+  categoryName: String!
+}
+
 type NeighborhoodsModel {
   id: ID!
   createdAt: DateTime!
@@ -33,7 +45,7 @@ type DisasterCategoriesModel {
 }
 
 type Query {
-  disasterAlerts: [DisasterAlertsModel!]!
+  disasterAlerts: [DisasterAlertsCustomModel!]!
   neighborhoods: [NeighborhoodsModel!]!
   disasterCategories: [DisasterCategoriesModel!]!
   disasterCategory(id: String!): DisasterCategoriesModel
