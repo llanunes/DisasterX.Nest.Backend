@@ -8,4 +8,6 @@ export declare class DisasterAlertsService {
     createDisasterAlert(input: CreateDisasterAlertsInput): Promise<DisasterAlert>;
     updateDisasterAlert(id: string, input: UpdateDisasterAlertsInput): Promise<DisasterAlert | null>;
     deleteDisasterAlert(id: string): Promise<boolean>;
+    getLastAlert(): Promise<DisasterAlertsCustomModel | null>;
+    getNeighborhoodWithMostAlerts(): Promise<DisasterAlertsCustomModel | null>;
 }

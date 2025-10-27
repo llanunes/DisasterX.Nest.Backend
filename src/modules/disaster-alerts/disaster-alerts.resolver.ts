@@ -27,4 +27,14 @@ export class DisasterAlertsResolver {
   ): Promise<DisasterAlertsModel | null> {
     return this.service.updateDisasterAlert(id, input);
   }
+
+  @Query(() => DisasterAlertsCustomModel, { nullable: true })
+  async lastAlert() {
+    return this.service.getLastAlert();
+  }
+
+  @Query(() => DisasterAlertsCustomModel, { nullable: true })
+  async neighborhoodWithMostAlerts() {
+    return this.service.getNeighborhoodWithMostAlerts();
+  }
 }

@@ -95,6 +95,67 @@ let DisasterAlertsService = class DisasterAlertsService {
             .returning();
         return result.length > 0;
     }
+    async getLastAlert() {
+        const [alert] = await drizzle_1.drizzle
+            .select({
+            id: disaster_alerts_1.disasterAlertsTable.id,
+            categoryId: disaster_alerts_1.disasterAlertsTable.categoryId,
+            categoryName: disaster_categories_1.disasterCategoriesTable.name,
+            neighborhoodId: disaster_alerts_1.disasterAlertsTable.neighborhoodId,
+            neighborhoodName: neighborhoods_1.neighborhoodsTable.name,
+            latitude: neighborhoods_1.neighborhoodsTable.latitude,
+            longitude: neighborhoods_1.neighborhoodsTable.longitude,
+            message: disaster_alerts_1.disasterAlertsTable.message,
+            severityLevel: disaster_alerts_1.disasterAlertsTable.severityLevel,
+            eventDate: disaster_alerts_1.disasterAlertsTable.eventDate,
+            createdAt: disaster_alerts_1.disasterAlertsTable.createdAt,
+            updatedAt: disaster_alerts_1.disasterAlertsTable.updatedAt,
+        })
+            .from(disaster_alerts_1.disasterAlertsTable)
+            .innerJoin(disaster_categories_1.disasterCategoriesTable, (0, drizzle_orm_1.eq)(disaster_alerts_1.disasterAlertsTable.categoryId, disaster_categories_1.disasterCategoriesTable.id))
+            .innerJoin(neighborhoods_1.neighborhoodsTable, (0, drizzle_orm_1.eq)(disaster_alerts_1.disasterAlertsTable.neighborhoodId, neighborhoods_1.neighborhoodsTable.id))
+            .orderBy((0, drizzle_orm_1.desc)(disaster_alerts_1.disasterAlertsTable.eventDate))
+            .limit(1)
+            .execute();
+        if (!alert)
+            return null;
+        return {
+            ...alert,
+            latitude: Number(alert.latitude),
+            longitude: Number(alert.longitude),
+        };
+    }
+    async getNeighborhoodWithMostAlerts() {
+        const [alert] = await drizzle_1.drizzle
+            .select({
+            id: disaster_alerts_1.disasterAlertsTable.id,
+            categoryId: disaster_alerts_1.disasterAlertsTable.categoryId,
+            categoryName: disaster_categories_1.disasterCategoriesTable.name,
+            neighborhoodId: disaster_alerts_1.disasterAlertsTable.neighborhoodId,
+            neighborhoodName: neighborhoods_1.neighborhoodsTable.name,
+            latitude: neighborhoods_1.neighborhoodsTable.latitude,
+            longitude: neighborhoods_1.neighborhoodsTable.longitude,
+            message: disaster_alerts_1.disasterAlertsTable.message,
+            severityLevel: disaster_alerts_1.disasterAlertsTable.severityLevel,
+            eventDate: disaster_alerts_1.disasterAlertsTable.eventDate,
+            createdAt: disaster_alerts_1.disasterAlertsTable.createdAt,
+            updatedAt: disaster_alerts_1.disasterAlertsTable.updatedAt,
+            count: (0, drizzle_orm_1.sql) `COUNT(${disaster_alerts_1.disasterAlertsTable.id}) OVER (PARTITION BY ${disaster_alerts_1.disasterAlertsTable.neighborhoodId})`,
+        })
+            .from(disaster_alerts_1.disasterAlertsTable)
+            .innerJoin(disaster_categories_1.disasterCategoriesTable, (0, drizzle_orm_1.eq)(disaster_alerts_1.disasterAlertsTable.categoryId, disaster_categories_1.disasterCategoriesTable.id))
+            .innerJoin(neighborhoods_1.neighborhoodsTable, (0, drizzle_orm_1.eq)(disaster_alerts_1.disasterAlertsTable.neighborhoodId, neighborhoods_1.neighborhoodsTable.id))
+            .orderBy((0, drizzle_orm_1.sql) `count DESC`)
+            .limit(1)
+            .execute();
+        if (!alert)
+            return null;
+        return {
+            ...alert,
+            latitude: Number(alert.latitude),
+            longitude: Number(alert.longitude),
+        };
+    }
 };
 exports.DisasterAlertsService = DisasterAlertsService;
 exports.DisasterAlertsService = DisasterAlertsService = __decorate([

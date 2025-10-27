@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { drizzle } from "drizzle";
-import { eq } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 import { DisasterAlert, disasterAlertsTable } from "src/drizzle/disaster-alerts";
 import { CreateDisasterAlertsInput, DisasterAlertsCustomModel, DisasterAlertsModel, UpdateDisasterAlertsInput } from "./disaster-alerts.entity";
 import { disasterCategoriesTable } from "src/drizzle/disaster-categories";
@@ -103,5 +103,82 @@ async getDisasterAlerts(): Promise<DisasterAlertsCustomModel[]> {
       .returning();
 
     return result.length > 0;
+  }
+
+  async getLastAlert(): Promise<DisasterAlertsCustomModel | null> {
+    const [alert] = await drizzle
+      .select({
+        id: disasterAlertsTable.id,
+        categoryId: disasterAlertsTable.categoryId,
+        categoryName: disasterCategoriesTable.name,
+        neighborhoodId: disasterAlertsTable.neighborhoodId,
+        neighborhoodName: neighborhoodsTable.name,
+        latitude: neighborhoodsTable.latitude,
+        longitude: neighborhoodsTable.longitude,
+        message: disasterAlertsTable.message,
+        severityLevel: disasterAlertsTable.severityLevel,
+        eventDate: disasterAlertsTable.eventDate,
+        createdAt: disasterAlertsTable.createdAt,
+        updatedAt: disasterAlertsTable.updatedAt,
+      })
+      .from(disasterAlertsTable)
+      .innerJoin(
+        disasterCategoriesTable,
+        eq(disasterAlertsTable.categoryId, disasterCategoriesTable.id)
+      )
+      .innerJoin(
+        neighborhoodsTable,
+        eq(disasterAlertsTable.neighborhoodId, neighborhoodsTable.id)
+      )
+      .orderBy(desc(disasterAlertsTable.eventDate))
+      .limit(1)
+      .execute();
+
+    if (!alert) return null;
+
+    return {
+      ...alert,
+      latitude: Number(alert.latitude),
+      longitude: Number(alert.longitude),
+    };
+  }
+
+  async getNeighborhoodWithMostAlerts(): Promise<DisasterAlertsCustomModel | null> {
+    const [alert] = await drizzle
+      .select({
+        id: disasterAlertsTable.id,
+        categoryId: disasterAlertsTable.categoryId,
+        categoryName: disasterCategoriesTable.name,
+        neighborhoodId: disasterAlertsTable.neighborhoodId,
+        neighborhoodName: neighborhoodsTable.name,
+        latitude: neighborhoodsTable.latitude,
+        longitude: neighborhoodsTable.longitude,
+        message: disasterAlertsTable.message,
+        severityLevel: disasterAlertsTable.severityLevel,
+        eventDate: disasterAlertsTable.eventDate,
+        createdAt: disasterAlertsTable.createdAt,
+        updatedAt: disasterAlertsTable.updatedAt,
+        count: sql`COUNT(${disasterAlertsTable.id}) OVER (PARTITION BY ${disasterAlertsTable.neighborhoodId})`,
+      })
+      .from(disasterAlertsTable)
+      .innerJoin(
+        disasterCategoriesTable,
+        eq(disasterAlertsTable.categoryId, disasterCategoriesTable.id)
+      )
+      .innerJoin(
+        neighborhoodsTable,
+        eq(disasterAlertsTable.neighborhoodId, neighborhoodsTable.id)
+      )
+      .orderBy(sql`count DESC`)
+      .limit(1)
+      .execute();
+
+    if (!alert) return null;
+
+    return {
+      ...alert,
+      latitude: Number(alert.latitude),
+      longitude: Number(alert.longitude),
+    };
   }
 }

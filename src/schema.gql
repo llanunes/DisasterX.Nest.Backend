@@ -48,6 +48,8 @@ type DisasterCategoriesModel {
 
 type Query {
   disasterAlerts: [DisasterAlertsCustomModel!]!
+  lastAlert: DisasterAlertsCustomModel
+  neighborhoodWithMostAlerts: DisasterAlertsCustomModel
   neighborhoods: [NeighborhoodsModel!]!
   disasterCategories: [DisasterCategoriesModel!]!
   disasterCategory(id: String!): DisasterCategoriesModel

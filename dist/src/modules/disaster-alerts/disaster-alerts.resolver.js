@@ -30,6 +30,12 @@ let DisasterAlertsResolver = class DisasterAlertsResolver {
     async updateDisasterAlert(id, input) {
         return this.service.updateDisasterAlert(id, input);
     }
+    async lastAlert() {
+        return this.service.getLastAlert();
+    }
+    async neighborhoodWithMostAlerts() {
+        return this.service.getNeighborhoodWithMostAlerts();
+    }
 };
 exports.DisasterAlertsResolver = DisasterAlertsResolver;
 __decorate([
@@ -53,6 +59,18 @@ __decorate([
     __metadata("design:paramtypes", [String, disaster_alerts_entity_1.UpdateDisasterAlertsInput]),
     __metadata("design:returntype", Promise)
 ], DisasterAlertsResolver.prototype, "updateDisasterAlert", null);
+__decorate([
+    (0, graphql_1.Query)(() => disaster_alerts_entity_1.DisasterAlertsCustomModel, { nullable: true }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], DisasterAlertsResolver.prototype, "lastAlert", null);
+__decorate([
+    (0, graphql_1.Query)(() => disaster_alerts_entity_1.DisasterAlertsCustomModel, { nullable: true }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], DisasterAlertsResolver.prototype, "neighborhoodWithMostAlerts", null);
 exports.DisasterAlertsResolver = DisasterAlertsResolver = __decorate([
     (0, graphql_1.Resolver)(() => disaster_alerts_entity_1.DisasterAlertsModel),
     __metadata("design:paramtypes", [disaster_alerts_service_1.DisasterAlertsService])

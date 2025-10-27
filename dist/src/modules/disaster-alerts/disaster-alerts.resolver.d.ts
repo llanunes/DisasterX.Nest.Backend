@@ -6,4 +6,6 @@ export declare class DisasterAlertsResolver {
     disasterAlerts(): Promise<DisasterAlertsCustomModel[]>;
     createDisasterAlert(input: CreateDisasterAlertsInput): Promise<DisasterAlertsModel>;
     updateDisasterAlert(id: string, input: UpdateDisasterAlertsInput): Promise<DisasterAlertsModel | null>;
+    lastAlert(): Promise<DisasterAlertsCustomModel | null>;
+    neighborhoodWithMostAlerts(): Promise<DisasterAlertsCustomModel | null>;
 }
