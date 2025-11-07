@@ -16,13 +16,14 @@ exports.DisasterAlertsResolver = void 0;
 const graphql_1 = require("@nestjs/graphql");
 const disaster_alerts_service_1 = require("./disaster-alerts.service");
 const disaster_alerts_entity_1 = require("./disaster-alerts.entity");
+const Pagination_definitions_1 = require("../utils/Pagination.definitions");
 let DisasterAlertsResolver = class DisasterAlertsResolver {
     service;
     constructor(service) {
         this.service = service;
     }
-    async disasterAlerts() {
-        return this.service.getDisasterAlerts();
+    async disasterAlerts(pagination) {
+        return this.service.getDisasterAlerts(pagination);
     }
     async createDisasterAlert(input) {
         return this.service.createDisasterAlert(input);
@@ -39,9 +40,10 @@ let DisasterAlertsResolver = class DisasterAlertsResolver {
 };
 exports.DisasterAlertsResolver = DisasterAlertsResolver;
 __decorate([
-    (0, graphql_1.Query)(() => [disaster_alerts_entity_1.DisasterAlertsCustomModel]),
+    (0, graphql_1.Query)(() => disaster_alerts_entity_1.DisasterAlertsListResponse),
+    __param(0, (0, graphql_1.Args)("pagination", { nullable: false })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Pagination_definitions_1.PaginationInput]),
     __metadata("design:returntype", Promise)
 ], DisasterAlertsResolver.prototype, "disasterAlerts", null);
 __decorate([

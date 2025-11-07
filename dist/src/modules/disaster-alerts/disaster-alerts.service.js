@@ -16,34 +16,48 @@ const drizzle_orm_1 = require("drizzle-orm");
 const disaster_alerts_1 = require("../../drizzle/disaster-alerts");
 const disaster_categories_1 = require("../../drizzle/disaster-categories");
 const neighborhoods_1 = require("../../drizzle/neighborhoods");
+const Pagination_definitions_1 = require("../utils/Pagination.definitions");
 let DisasterAlertsService = class DisasterAlertsService {
     table = disaster_alerts_1.disasterAlertsTable;
     constructor() { }
-    async getDisasterAlerts() {
-        const alerts = await drizzle_1.drizzle
-            .select({
-            id: disaster_alerts_1.disasterAlertsTable.id,
-            categoryId: disaster_alerts_1.disasterAlertsTable.categoryId,
-            categoryName: disaster_categories_1.disasterCategoriesTable.name ?? "Não informado",
-            neighborhoodId: disaster_alerts_1.disasterAlertsTable.neighborhoodId,
-            neighborhoodName: neighborhoods_1.neighborhoodsTable.name ?? "Não informado",
-            latitude: neighborhoods_1.neighborhoodsTable.latitude,
-            longitude: neighborhoods_1.neighborhoodsTable.longitude,
-            message: disaster_alerts_1.disasterAlertsTable.message,
-            severityLevel: disaster_alerts_1.disasterAlertsTable.severityLevel,
-            eventDate: disaster_alerts_1.disasterAlertsTable.eventDate,
-            createdAt: disaster_alerts_1.disasterAlertsTable.createdAt,
-            updatedAt: disaster_alerts_1.disasterAlertsTable.updatedAt,
-        })
-            .from(disaster_alerts_1.disasterAlertsTable)
-            .innerJoin(disaster_categories_1.disasterCategoriesTable, (0, drizzle_orm_1.eq)(disaster_alerts_1.disasterAlertsTable.categoryId, disaster_categories_1.disasterCategoriesTable.id))
-            .innerJoin(neighborhoods_1.neighborhoodsTable, (0, drizzle_orm_1.eq)(disaster_alerts_1.disasterAlertsTable.neighborhoodId, neighborhoods_1.neighborhoodsTable.id))
-            .execute();
-        return alerts.map(alert => ({
-            ...alert,
-            latitude: Number(alert.latitude),
-            longitude: Number(alert.longitude),
-        }));
+    async getDisasterAlerts(pagination) {
+        const [data, [{ totalCount }]] = await Promise.all([
+            drizzle_1.drizzle
+                .select({
+                id: disaster_alerts_1.disasterAlertsTable.id,
+                categoryId: disaster_alerts_1.disasterAlertsTable.categoryId,
+                categoryName: disaster_categories_1.disasterCategoriesTable.name ?? "Não informado",
+                neighborhoodId: disaster_alerts_1.disasterAlertsTable.neighborhoodId,
+                neighborhoodName: neighborhoods_1.neighborhoodsTable.name ?? "Não informado",
+                latitude: neighborhoods_1.neighborhoodsTable.latitude,
+                longitude: neighborhoods_1.neighborhoodsTable.longitude,
+                message: disaster_alerts_1.disasterAlertsTable.message,
+                severityLevel: disaster_alerts_1.disasterAlertsTable.severityLevel,
+                eventDate: disaster_alerts_1.disasterAlertsTable.eventDate,
+                createdAt: disaster_alerts_1.disasterAlertsTable.createdAt,
+                updatedAt: disaster_alerts_1.disasterAlertsTable.updatedAt,
+            })
+                .from(disaster_alerts_1.disasterAlertsTable)
+                .innerJoin(disaster_categories_1.disasterCategoriesTable, (0, drizzle_orm_1.eq)(disaster_alerts_1.disasterAlertsTable.categoryId, disaster_categories_1.disasterCategoriesTable.id))
+                .innerJoin(neighborhoods_1.neighborhoodsTable, (0, drizzle_orm_1.eq)(disaster_alerts_1.disasterAlertsTable.neighborhoodId, neighborhoods_1.neighborhoodsTable.id))
+                .limit(pagination.pageSize)
+                .offset((0, Pagination_definitions_1.getPaginationOffset)(pagination))
+                .execute(),
+            drizzle_1.drizzle
+                .select({
+                totalCount: (0, drizzle_orm_1.sql) `COUNT(*)`.as("total_count"),
+            })
+                .from(disaster_alerts_1.disasterAlertsTable)
+                .execute(),
+        ]);
+        return {
+            data: data.map(alert => ({
+                ...alert,
+                latitude: Number(alert.latitude),
+                longitude: Number(alert.longitude),
+            })),
+            pagination: (0, Pagination_definitions_1.getPaginationResponse)(totalCount, pagination),
+        };
     }
     async getDisasterAlertById(id) {
         const alert = await drizzle_1.drizzle.query.disasterAlertsTable.findFirst({
