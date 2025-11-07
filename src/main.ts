@@ -12,7 +12,7 @@ async function bootstrap() {
   // Porta fornecida pelo Render ou fallback 3000
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  console.log(`🚀 App running on port ${port}`);
+  console.log(`🚀🚀 App running on port ${port}`);
 }
 
 bootstrap();
