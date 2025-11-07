@@ -1,6 +1,7 @@
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { DisasterAlertsService } from "./disaster-alerts.service";
-import { CreateDisasterAlertsInput, DisasterAlertsCustomModel, DisasterAlertsModel, UpdateDisasterAlertsInput } from "./disaster-alerts.entity";
+import { CreateDisasterAlertsInput, DisasterAlertsCustomModel, DisasterAlertsListResponse, DisasterAlertsModel, UpdateDisasterAlertsInput } from "./disaster-alerts.entity";
+import { PaginationInput } from "../utils/Pagination.definitions";
 
 @Resolver(() => DisasterAlertsModel)
 export class DisasterAlertsResolver {
@@ -8,9 +9,11 @@ export class DisasterAlertsResolver {
     private readonly service: DisasterAlertsService,
   ) {}
 
-  @Query(() => [DisasterAlertsCustomModel])
-  async disasterAlerts(): Promise<DisasterAlertsCustomModel[]> {
-    return this.service.getDisasterAlerts();
+  @Query(() => DisasterAlertsListResponse)
+  async disasterAlerts(
+    @Args("pagination", { nullable: false }) pagination: PaginationInput,
+  ): Promise<DisasterAlertsListResponse> {
+    return this.service.getDisasterAlerts(pagination);
   }
 
   @Mutation(() => DisasterAlertsModel)

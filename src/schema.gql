@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Pagination {
+  totalCount: Int!
+  pageCount: Int!
+  hasMore: Boolean!
+}
+
 type DisasterAlertsModel {
   id: ID!
   createdAt: DateTime!
@@ -31,6 +37,11 @@ type DisasterAlertsCustomModel {
   longitude: Float!
 }
 
+type DisasterAlertsListResponse {
+  data: [DisasterAlertsCustomModel!]!
+  pagination: Pagination!
+}
+
 type NeighborhoodsModel {
   id: ID!
   createdAt: DateTime!
@@ -47,12 +58,17 @@ type DisasterCategoriesModel {
 }
 
 type Query {
-  disasterAlerts: [DisasterAlertsCustomModel!]!
+  disasterAlerts(pagination: PaginationInput!): DisasterAlertsListResponse!
   lastAlert: DisasterAlertsCustomModel
   neighborhoodWithMostAlerts: DisasterAlertsCustomModel
   neighborhoods: [NeighborhoodsModel!]!
   disasterCategories: [DisasterCategoriesModel!]!
   disasterCategory(id: String!): DisasterCategoriesModel
+}
+
+input PaginationInput {
+  page: Int!
+  pageSize: Int!
 }
 
 type Mutation {

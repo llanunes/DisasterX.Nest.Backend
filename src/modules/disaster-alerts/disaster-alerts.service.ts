@@ -1,10 +1,12 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
+
 import { drizzle } from "drizzle";
 import { eq, desc, sql } from "drizzle-orm";
 import { DisasterAlert, disasterAlertsTable } from "src/drizzle/disaster-alerts";
-import { CreateDisasterAlertsInput, DisasterAlertsCustomModel, DisasterAlertsModel, UpdateDisasterAlertsInput } from "./disaster-alerts.entity";
+import { CreateDisasterAlertsInput, DisasterAlertsCustomModel, DisasterAlertsListResponse, DisasterAlertsModel, UpdateDisasterAlertsInput } from "./disaster-alerts.entity";
 import { disasterCategoriesTable } from "src/drizzle/disaster-categories";
 import { neighborhoodsTable } from "src/drizzle/neighborhoods";
+import { getPaginationOffset, getPaginationResponse, PaginationInput } from "../utils/Pagination.definitions";
 
 @Injectable()
 export class DisasterAlertsService {
@@ -12,38 +14,52 @@ export class DisasterAlertsService {
 
   constructor() {}
 
-async getDisasterAlerts(): Promise<DisasterAlertsCustomModel[]> {
-  const alerts = await drizzle
-    .select({
-      id: disasterAlertsTable.id,
-      categoryId: disasterAlertsTable.categoryId,
-      categoryName: disasterCategoriesTable.name ?? "Não informado",
-      neighborhoodId: disasterAlertsTable.neighborhoodId,
-      neighborhoodName: neighborhoodsTable.name ?? "Não informado",
-      latitude: neighborhoodsTable.latitude,
-      longitude: neighborhoodsTable.longitude,
-      message: disasterAlertsTable.message,
-      severityLevel: disasterAlertsTable.severityLevel,
-      eventDate: disasterAlertsTable.eventDate,
-      createdAt: disasterAlertsTable.createdAt,
-      updatedAt: disasterAlertsTable.updatedAt,
-    })
-    .from(disasterAlertsTable)
-    .innerJoin(
-      disasterCategoriesTable,
-      eq(disasterAlertsTable.categoryId, disasterCategoriesTable.id)
-    )
-    .innerJoin(
-      neighborhoodsTable,
-      eq(disasterAlertsTable.neighborhoodId, neighborhoodsTable.id)
-    )
-    .execute();
+async getDisasterAlerts(pagination: PaginationInput): Promise<DisasterAlertsListResponse> {
+  const [data, [{ totalCount }]] = await Promise.all([
+    drizzle
+      .select({
+        id: disasterAlertsTable.id,
+        categoryId: disasterAlertsTable.categoryId,
+        categoryName: disasterCategoriesTable.name ?? "Não informado",
+        neighborhoodId: disasterAlertsTable.neighborhoodId,
+        neighborhoodName: neighborhoodsTable.name ?? "Não informado",
+        latitude: neighborhoodsTable.latitude,
+        longitude: neighborhoodsTable.longitude,
+        message: disasterAlertsTable.message,
+        severityLevel: disasterAlertsTable.severityLevel,
+        eventDate: disasterAlertsTable.eventDate,
+        createdAt: disasterAlertsTable.createdAt,
+        updatedAt: disasterAlertsTable.updatedAt,
+      })
+      .from(disasterAlertsTable)
+      .innerJoin(
+        disasterCategoriesTable,
+        eq(disasterAlertsTable.categoryId, disasterCategoriesTable.id),
+      )
+      .innerJoin(
+        neighborhoodsTable,
+        eq(disasterAlertsTable.neighborhoodId, neighborhoodsTable.id),
+      )
+      .limit(pagination.pageSize)
+      .offset(getPaginationOffset(pagination))
+      .execute(),
 
-  return alerts.map(alert => ({
-    ...alert,
-    latitude: Number(alert.latitude),
-    longitude: Number(alert.longitude),
-  }));
+    drizzle
+      .select({
+        totalCount: sql<number>`COUNT(*)`.as("total_count"),
+      })
+      .from(disasterAlertsTable)
+      .execute(),
+  ]);
+
+  return {
+    data: data.map(alert => ({
+      ...alert,
+      latitude: Number(alert.latitude),
+      longitude: Number(alert.longitude),
+    })),
+    pagination: getPaginationResponse(totalCount, pagination),
+  };
 }
 
 

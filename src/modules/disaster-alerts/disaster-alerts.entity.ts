@@ -1,6 +1,7 @@
 
 import { Field, InputType, ObjectType } from "@nestjs/graphql";
 import { BaseModel } from "src/drizzle/base-model";
+import { Pagination } from "../utils/Pagination.definitions";
 
 @ObjectType()
 export class DisasterAlertsModel extends BaseModel {
@@ -34,6 +35,15 @@ export class DisasterAlertsCustomModel extends DisasterAlertsModel {
 
   @Field(() => Number, { nullable: false })
   longitude!: number;
+}
+
+@ObjectType()
+export class DisasterAlertsListResponse {
+  @Field(() => [DisasterAlertsCustomModel])
+  data!: DisasterAlertsCustomModel[];
+
+  @Field(() => Pagination)
+  pagination!: Pagination;
 }
 
 @InputType()
